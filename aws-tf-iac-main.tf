@@ -4,7 +4,7 @@ provider "aws" {
 
 ## 1. Create a VPC
 resource "aws_vpc" "web02-prod-vpc" {
-    cidr_blocks = "10.0.0.0/16"
+    cidr_block = "10.0.0.0/16"
 }
 
 ## 2. Create Internet Gateway
