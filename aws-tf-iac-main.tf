@@ -120,7 +120,7 @@ resource "aws_eip" "one" {
    #Options
    #user_data = file("${path.module}/files/api-data.sh")
    #and inside the api-data.sh put all the commands you want to run on the instance
-   user_data = "${file{"api-data.sh")}"
+   user_data = "${file("api-data.sh")}"
    tags = {
      Name = "web-server"
    }
