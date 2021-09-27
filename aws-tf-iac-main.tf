@@ -9,7 +9,7 @@ resource "aws_vpc" "web02-prod-vpc" {
 
 ## 2. Create Internet Gateway
 resource "aws_internet_gateway" "web0a2-prod-gw" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.web02-prod-vpc.id
 
   tags = {
     Name = "web02-prod-gw"
@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "web0a2-prod-gw" {
 }
 ## 3. Create Custom Route Table
 resource "aws_route_table" "web02-prod-route-table" {
-  vpc_id = aws_vpc.example.id
+  vpc_id = aws_vpc.web02-prod-vpc.id
 
   route = [
     {
