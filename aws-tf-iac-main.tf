@@ -117,6 +117,9 @@ resource "aws_eip" "one" {
      device_index         = 0
      network_interface_id = aws_network_interface.web02-prod-net-server-nic.id
    }
+   #Options
+   #user_data = file("${path.module}/files/api-data.sh")
+   #and inside the api-data.sh put all the commands you want to run on the instance
    user_data = <<-EOF
                  #!/bin/bash
                  sudo apt update -y
