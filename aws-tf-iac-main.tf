@@ -8,7 +8,7 @@ resource "aws_vpc" "web02-prod-vpc" {
 }
 
 ## 2. Create Internet Gateway
-resource "aws_internet_gateway" "web0a2-prod-gw" {
+resource "aws_internet_gateway" "web02-prod-gw" {
   vpc_id = aws_vpc.web02-prod-vpc.id
 
   tags = {
@@ -48,7 +48,7 @@ resource "aws_subnet" "web02-prod-subnet" {
 ## 5. Associate Subnet with the Route Teble
 resource "aws_route_table_association" "a" {
     subnet_id = aws_subnet.web02-prod-subnet.id
-    route_tabel_id = aws_route_table.web02-prod-route-table.id
+    route_table_id = aws_route_table.web02-prod-route-table.id
 }
 
 
