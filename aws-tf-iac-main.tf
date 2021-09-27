@@ -111,7 +111,7 @@ resource "aws_eip" "one" {
  resource "aws_instance" "web02-prod-server-instance" {
    ami               = "ami-09e67e426f25ce0d7"
    instance_type     = "t2.micro"
-   availability_zone = "us-east-1d"
+   #availability_zone = "us-east-1d"
    key_name          = "myinanpang-keypair01"
    network_interface {
      device_index         = 0
