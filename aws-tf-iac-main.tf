@@ -112,6 +112,7 @@ resource "aws_eip" "one" {
    ami               = "ami-09e67e426f25ce0d7"
    instance_type     = "t2.micro"
    availability_zone = "us-east-1d"
+   key_name          = "myinanpang-keypair01"
    network_interface {
      device_index         = 0
      network_interface_id = aws_network_interface.web02-prod-net-server-nic.id
