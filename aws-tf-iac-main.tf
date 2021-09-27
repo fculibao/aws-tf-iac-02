@@ -22,11 +22,11 @@ resource "aws_route_table" "web02-prod-route-table" {
   route = [
     {
       cidr_block = "0.0.0.0/0"
-      gateway_id = aws_internet_gateway.example.id
+      gateway_id = aws_internet_gateway.web02-prod-gw.id
     },
     {
       ipv6_cidr_block        = "::/0"
-      gateway_id = aws_egress_only_internet_gateway.example.id
+      gateway_id = aws_internet_gateway.web02-prod-gw.id
     }
   ]
 
@@ -46,7 +46,7 @@ resource "aws_subnet" "web02-prod-subnet" {
 }
 
 ## 5. Associate Subnet with the Route Teble
-resource "aws_route_table_association" "a"{
+resource "aws_route_table_association" "a" {
     subnet_id = aws_subnet.web02-prod-subnet.id
     route_tabel_id = aws_route_table.web02-prod-route-table.id
 }
@@ -56,7 +56,7 @@ resource "aws_route_table_association" "a"{
 resource "aws_security_group" "web02-prod-allow-http-https-traffic" {
   name        = "allow_http_https"
   description = "Allow HTTP inbound traffic"
-  vpc_id      = aws_vpc.web02-prod.id
+  vpc_id      = aws_vpc.web02-prod-vpc.id
 
   ingress {
       description      = "HTTPS from VPC"
