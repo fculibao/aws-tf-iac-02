@@ -19,16 +19,15 @@ resource "aws_internet_gateway" "web02-prod-gw" {
 resource "aws_route_table" "web02-prod-route-table" {
   vpc_id = aws_vpc.web02-prod-vpc.id
 
-  route = [
-    {
+  route {
       cidr_block = "0.0.0.0/0"
       gateway_id = aws_internet_gateway.web02-prod-gw.id
-    },
-    {
+  }
+  
+  route {
       ipv6_cidr_block        = "::/0"
       gateway_id = aws_internet_gateway.web02-prod-gw.id
     }
-  ]
 
   tags = {
     Name = "web02-pord-route-table"
