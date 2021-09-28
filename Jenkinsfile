@@ -12,6 +12,23 @@ pipeline {
 
           }
         }
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building Image.....'
+                sh 'docker build -t fculibao/nginx:2.0.0 .'
+            }
+        }
+        stage('Push Docker Image') {
+            steps {
+                echo 'Pushing New Images.....'
+                script {
+                    withCredentials([string(credentialsId: 'docker-access-pwd', variable: 'dockerHubPwd')]) {
+                    sh "docker login -u fculibao -p ${dockerHubPwd}"
+                    }
+                    sh 'docker push fculibao/nginx:2.0.0'
+                }            
+            }
+        }
         stage ("terraform init") {
             steps {
                 sh ('/usr/local/bin/terraform init')
@@ -23,6 +40,18 @@ pipeline {
                 echo "Terraform action is --> ${action}"
                 sh ('/usr/local/bin/terraform ${action} --auto-approve')
            }
+        }
+        stage('Deploy Docker Container into AWS EC2 Instance') {
+            steps {
+                echo 'Deploying....'
+                script {
+                    sh "terraform state show aws_eip.one | grep "public_ip" | awk 'NR==1{print $3}' | sed 's/"//g' > instance_pub_ip"
+                    def dockerRun = 'docker run -p 80:80 -d --name web-server fculibao/nginx:2.0.0'
+                    sshagent(['ubuntu']) {
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@\$instance_pub_ip ${dockerRun}"
+                    }
+                }
+            }
         }    
     }
 }

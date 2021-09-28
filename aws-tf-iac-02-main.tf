@@ -4,7 +4,11 @@ provider "aws" {
 
 ## 1. Create a VPC
 resource "aws_vpc" "web02-prod-vpc" {
-    cidr_block = "10.0.0.0/16"
+  cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = var.tag_name
+  }
 }
 
 ## 2. Create Internet Gateway
@@ -12,7 +16,7 @@ resource "aws_internet_gateway" "web02-prod-gw" {
   vpc_id = aws_vpc.web02-prod-vpc.id
 
   tags = {
-    Name = "web02-prod-gw"
+    Name = var.tag_name
   }
 }
 ## 3. Create Custom Route Table
@@ -30,7 +34,7 @@ resource "aws_route_table" "web02-prod-route-table" {
     }
 
   tags = {
-    Name = "web02-pord-route-table"
+    Name = var.tag_name
   }
 }
 
@@ -40,14 +44,18 @@ resource "aws_subnet" "web02-prod-subnet" {
   cidr_block = "10.0.1.0/24"
 
   tags = {
-    Name = "web02-prod-subnet"
+    Name = var.tag_name
   }
 }
 
 ## 5. Associate Subnet with the Route Teble
 resource "aws_route_table_association" "a" {
-    subnet_id = aws_subnet.web02-prod-subnet.id
-    route_table_id = aws_route_table.web02-prod-route-table.id
+  subnet_id = aws_subnet.web02-prod-subnet.id
+  route_table_id = aws_route_table.web02-prod-route-table.id
+
+  tags = {
+    Name = var.tag_name
+  }
 }
 
 
@@ -87,7 +95,7 @@ resource "aws_security_group" "web02-prod-allow-http-https-traffic" {
   }
 
   tags = {
-    Name = "allow_http_https_traffic"
+    Name = var.tag_name
   }
 }
 
@@ -97,6 +105,10 @@ resource "aws_network_interface" "web02-prod-net-server-nic" {
   subnet_id       = aws_subnet.web02-prod-subnet.id
   private_ips     = ["10.0.1.50"]
   security_groups = [aws_security_group.web02-prod-allow-http-https-traffic.id]
+
+  tags = {
+    Name = var.tag_name
+  }
 }
 
 ## 8. Assigh an Elastic IP to the Network Interface created in Step 7
@@ -104,15 +116,19 @@ resource "aws_eip" "one" {
   vpc                       = true
   network_interface         = aws_network_interface.web02-prod-net-server-nic.id
   associate_with_private_ip = "10.0.1.50"
+
+  tags = {
+    Name = var.tag_name
+  }
 }
 
 
 ## 9. Create an Ubuntu Server and Install/Apache2
  resource "aws_instance" "web02-prod-server-instance" {
-   ami               = "ami-09e67e426f25ce0d7"
-   instance_type     = "t2.micro"
+   ami               = var.ami_id
+   instance_type     = var.instance_type
    #availability_zone = "us-east-1d"
-   key_name          = "myinanpang-keypair01"
+   key_name          = var.key_name
    network_interface {
      device_index         = 0
      network_interface_id = aws_network_interface.web02-prod-net-server-nic.id
@@ -122,6 +138,6 @@ resource "aws_eip" "one" {
    #and inside the api-data.sh put all the commands you want to run on the instance
    user_data = "${file("api-data.sh")}"
    tags = {
-     Name = "web-server"
+     Name = var.tag_name
    }
  }
