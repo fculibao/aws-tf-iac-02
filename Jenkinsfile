@@ -18,16 +18,7 @@ pipeline {
                 sh 'docker build -t fculibao/nginx:2.0.0 .'
             }
         }
-        stage('Mvn Pacakge Test') {
-            steps {
-                echo 'Performing Test....'
-                script {
-                    def mvnHome = tool name: 'maven-3.8.2', type: 'maven'
-                    def mvnCMD = "${mvnHome}/bin/mvn"
-                    sh "${mvnCMD} clean package"
-                } 
-            }
-        }
+
         stage('Push Docker Image') {
             steps {
                 echo 'Pushing New Images.....'
