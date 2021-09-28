@@ -47,7 +47,7 @@ pipeline {
                 echo 'Deploying....'
                 script {
                     sh '''
-                        terraform state show aws_eip.one | grep "public_ip" | awk 'NR==1{print $3}' | sed 's/"//g' > instance_pub_ip
+                        /usr/local/bin/terraform state show aws_eip.one | grep "public_ip" | awk 'NR==1{print $3}' | sed 's/"//g' > instance_pub_ip
                     '''
                     def dockerRun = 'docker run -p 80:80 -d --name web-server fculibao/nginx:2.0.0'
                     sshagent(['ubuntu']) {
