@@ -1,5 +1,3 @@
-FROM ubuntu 
-RUN apt-get update -y
-RUN apt-get install –y nginx 
-CMD [“echo”,”Image created”] 
+FROM nginx:latest
+COPY ./index.html /usr/share/nginx/html/index.html
 
